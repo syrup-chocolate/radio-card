@@ -19,10 +19,10 @@ const STAMP_TYPES = [
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 const STORAGE_KEYS = {
-  LOGS: 'radio_card_logs_v2',
-  SELECTED_STAMP: 'radio_card_selected_stamp_v2',
-  USER_NAME: 'radio_card_user_name_v2',
-  SOUND_ENABLED: 'radio_card_sound_enabled_v2',
+  LOGS: 'radio_card_logs_v3',
+  SELECTED_STAMP: 'radio_card_selected_stamp_v3',
+  USER_NAME: 'radio_card_user_name_v3',
+  SOUND_ENABLED: 'radio_card_sound_enabled_v3',
 };
 
 export default function App() {
@@ -384,9 +384,8 @@ export default function App() {
             <span>{isTodayDone ? '本日のスタンプは押印済み（タップで取消）' : 'スタンプを押す！'}</span>
           </button>
 
-          <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed #F3E5D8', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#8C7B70', whiteSpace: 'nowrap' }}>印鑑デザイン:</span>
-            <div style={{ display: 'flex', gap: '8px', flex: 1, justifyContent: 'center' }}>
+          <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: '1px dashed #F3E5D8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
               {STAMP_TYPES.map((stamp) => {
                 const isSelected = selectedStamp === stamp.id;
                 return (
@@ -436,104 +435,4 @@ export default function App() {
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px', marginBottom: '14px' }}>
-            <button onClick={() => setViewMonth((m) => (m === 0 ? 11 : m - 1))} style={{ background: 'none', border: 'none', color: '#8C7B70', cursor: 'pointer', padding: '4px' }}>
-              <ChevronLeft style={{ width: '22px', height: '22px' }} />
-            </button>
-
-            <h3 style={{ fontSize: '16px', fontWeight: 900, color: '#2C221E', margin: 0, whiteSpace: 'nowrap' }}>
-              {viewYear}年{viewMonth + 1}月 出席カード
-            </h3>
-
-            <button onClick={() => setViewMonth((m) => (m === 11 ? 0 : m + 1))} style={{ background: 'none', border: 'none', color: '#8C7B70', cursor: 'pointer', padding: '4px' }}>
-              <ChevronRight style={{ width: '22px', height: '22px' }} />
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFF8F3', borderRadius: '10px', padding: '8px 12px', border: '1px solid #F3E5D8', marginBottom: '14px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#8C7B70', whiteSpace: 'nowrap' }}>なまえ：</span>
-            <input
-              type="text"
-              value={userName}
-              onChange={handleNameChange}
-              placeholder="ここになまえをかいてね"
-              maxLength={24}
-              style={{ width: '100%', backgroundColor: 'transparent', fontSize: '13px', fontWeight: 700, color: '#2C221E', border: 'none', outline: 'none' }}
-            />
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '6px', marginBottom: '8px', textAlign: 'center' }}>
-            {WEEKDAYS.map((w, idx) => (
-              <div key={w} style={{ fontSize: '11px', fontWeight: 800, color: idx === 0 ? '#E74C3C' : idx === 6 ? '#3498DB' : '#8C7B70' }}>
-                {w}
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '6px' }}>
-            {calendarCells.map((cellDate, idx) => {
-              if (!cellDate) return <div key={`empty-${idx}`} style={{ aspectRatio: '1' }} />;
-
-              const y = cellDate.getFullYear();
-              const m = cellDate.getMonth() + 1;
-              const d = cellDate.getDate();
-              const key = `${y}-${m}-${d}`;
-              const loggedStamp = logs[key];
-              const isTodayCell = y === realTodayYear && m === realTodayMonth && d === realTodayDay;
-              const isFuture = cellDate > realToday;
-              const dayOfWeek = cellDate.getDay();
-
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleDateCellClick(cellDate)}
-                  disabled={isFuture}
-                  style={{
-                    aspectRatio: '1',
-                    borderRadius: '12px',
-                    border: isTodayCell ? '2px solid #D94336' : '1px solid #E5D5C5',
-                    backgroundColor: isTodayCell ? '#FFF5F4' : '#FAFAFA',
-                    cursor: isFuture ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '4px',
-                    position: 'relative',
-                    opacity: isFuture ? 0.4 : 1
-                  }}
-                >
-                  <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '10px', fontWeight: 800, color: isTodayCell ? '#D94336' : dayOfWeek === 0 ? '#E74C3C' : dayOfWeek === 6 ? '#3498DB' : '#8C7B70' }}>
-                      {d}
-                    </span>
-                    {isTodayCell && (
-                      <span style={{ fontSize: '7px', fontWeight: 900, color: '#FFF', backgroundColor: '#D94336', padding: '0 3px', borderRadius: '3px' }}>今日</span>
-                    )}
-                  </div>
-
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                    {loggedStamp ? (
-                      <div className="animate-stamp" style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: '#FFF', border: '1.5px solid #D94336', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                        <span style={{ fontSize: '14px', lineHeight: 1 }}>{getStampEmoji(loggedStamp)}</span>
-                      </div>
-                    ) : isFuture ? (
-                      <span style={{ fontSize: '10px', color: '#D1C2B4' }}>🔒</span>
-                    ) : (
-                      <div style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px dashed #E5D5C5' }} />
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          <p style={{ marginTop: '14px', fontSize: '11px', color: '#8C7B70', textAlign: 'center', lineHeight: '1.4' }}>
-            ※ 本日（13日）を含めた過去日までのマス目は、タップすると任意でスタンプの押印・取り消しや変更ができます（未来日はロック）。
-          </p>
-        </section>
-
-      </main>
-    </div>
-  );
-}
+            <button onClick={() => setViewMonth((m) => (m === 0 ?
