@@ -26,15 +26,16 @@ const STORAGE_KEYS = {
 };
 
 export default function App() {
-  const [realToday] = useState(() => new Date(2026, 10, 13)); // 2026年11月13日
+  // 固定の日付ではなく、実際の現在日時をリアルタイムで取得するように修正
+  const [realToday, setRealToday] = useState(() => new Date());
 
   const [logs, setLogs] = useState({});
   const [selectedStamp, setSelectedStamp] = useState('beans');
   const [userName, setUserName] = useState('');
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  const [viewYear, setViewYear] = useState(2026);
-  const [viewMonth, setViewMonth] = useState(10); // 11月
+  const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(() => new Date().getMonth());
 
   const [isStamping, setIsStamping] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
@@ -47,6 +48,17 @@ export default function App() {
   const realTodayDay = realToday.getDate();
 
   const todayKey = `${realTodayYear}-${realTodayMonth}-${realTodayDay}`;
+
+  // アプリ起動中やタブを開いたまま日付が変わったときに自動で現在日時に追従するタイマー
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date();
+      if (now.getDate() !== realToday.getDate() || now.getMonth() !== realToday.getMonth()) {
+        setRealToday(now);
+      }
+    }, 60000); // 1分ごとに日付変更をチェック
+    return () => clearInterval(timer);
+  }, [realToday]);
 
   useEffect(() => {
     try {
