@@ -14,7 +14,6 @@ import {
   Lock
 } from 'lucide-react';
 
-// スタンプ4種（絵文字のみ・テキスト案内なし）
 const STAMP_TYPES = [
   { id: 'beans', emoji: '🫘' },
   { id: 'fist', emoji: '👊' },
@@ -25,14 +24,13 @@ const STAMP_TYPES = [
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 const STORAGE_KEYS = {
-  STAMPS: 'radio_taiso_stamps_v5',
-  SELECTED_STAMP: 'radio_taiso_selected_stamp_v5',
-  USER_NAME: 'radio_taiso_user_name_v5',
-  SOUND_ENABLED: 'radio_taiso_sound_enabled_v5',
+  STAMPS: 'radio_taiso_stamps_v6',
+  SELECTED_STAMP: 'radio_taiso_selected_stamp_v6',
+  USER_NAME: 'radio_taiso_user_name_v6',
+  SOUND_ENABLED: 'radio_taiso_sound_enabled_v6',
 };
 
 export default function App() {
-  // 本日日付（2026年11月13日固定）
   const [today] = useState(() => new Date(2026, 10, 13));
 
   const [stamps, setStamps] = useState({});
@@ -40,9 +38,8 @@ export default function App() {
   const [userName, setUserName] = useState('');
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // 表示中の年月（2026年11月）
   const [viewYear, setViewYear] = useState(2026);
-  const [viewMonth, setViewMonth] = useState(10);
+  const [viewMonth, setViewMonth] = useState(10); // 11月
 
   const [isStamping, setIsStamping] = useState(false);
   const [celebrationModal, setCelebrationModal] = useState(null);
@@ -253,7 +250,7 @@ export default function App() {
   };
 
   const handleDateCellClick = (cellDate) => {
-    const startBound = new Date(2026, 10, 1); // 2026年11月1日
+    const startBound = new Date(2026, 10, 1);
     const yesterdayBound = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
 
     if (cellDate > today) {
@@ -344,7 +341,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF8E7] text-[#3B2A1E] font-sans pb-12 selection:bg-[#E04F33] selection:text-white">
+    <div style={{ minHeight: '100vh', backgroundColor: '#FDF8E7', color: '#3B2A1E', fontFamily: 'sans-serif', paddingBottom: '3rem' }}>
       <style>{`
         @keyframes stampSlam {
           0% { transform: scale(2.4) rotate(-25deg); opacity: 0; }
@@ -354,103 +351,108 @@ export default function App() {
         .animate-stamp-slam {
           animation: stampSlam 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .paper-texture {
-          background-image: radial-gradient(rgba(180, 145, 95, 0.12) 1px, transparent 0);
-          background-size: 16px 16px;
-        }
       `}</style>
 
-      {/* トップヘッダー */}
-      <header className="w-full bg-[#E04F33] text-white shadow-md sticky top-0 z-30">
-        <div className="max-w-lg mx-auto px-4 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="text-2xl leading-none select-none" role="img" aria-label="beans">
-              🫘
-            </span>
-            <h1 className="text-lg sm:text-xl font-extrabold tracking-wide">
+      {/* ヘッダー */}
+      <header style={{ width: '100%', backgroundColor: '#E04F33', color: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', position: 'sticky', top: 0, zIndex: 30 }}>
+        <div style={{ maxWidth: '32rem', margin: '0 auto', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '24px', lineHeight: 1 }}>🫘</span>
+            <h1 style={{ fontSize: '18px', fontWeight: 800, margin: 0, letterSpacing: '0.05em' }}>
               ラジオ体操カード
             </h1>
           </div>
           <button
             onClick={toggleSound}
-            className="p-2 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 transition cursor-pointer"
-            aria-label="音声切り替え"
+            style={{ padding: '8px', borderRadius: '9999px', background: 'rgba(255,255,255,0.15)', border: 'none', cursor: 'pointer' }}
           >
-            {soundEnabled ? <Volume2 className="w-5 h-5 text-white" /> : <VolumeX className="w-5 h-5 text-white/75" />}
+            {soundEnabled ? <Volume2 style={{ width: '20px', height: '20px', color: '#fff' }} /> : <VolumeX style={{ width: '20px', height: '20px', color: 'rgba(255,255,255,0.75)' }} />}
           </button>
         </div>
       </header>
 
       {toastMessage && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-[#3B2A1E] text-[#FDF8E7] text-xs sm:text-sm font-bold px-4 py-2.5 rounded-full shadow-lg border border-[#E6D5B8] whitespace-nowrap">
+        <div style={{ position: 'fixed', top: '64px', left: '50%', transform: 'translateX(-50%)', zIndex: 50, backgroundColor: '#3B2A1E', color: '#FDF8E7', fontSize: '13px', fontWeight: 700, padding: '10px 18px', borderRadius: '9999px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>
           {toastMessage}
         </div>
       )}
 
-      <main className="max-w-lg mx-auto px-4 pt-5 flex flex-col gap-5">
+      <main style={{ maxWidth: '32rem', margin: '0 auto', padding: '20px 16px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* 実績カード */}
-        <section className="grid grid-cols-2 gap-3.5">
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#EFE3C8] flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-[#FFF2E2] flex items-center justify-center shrink-0">
-              <Flame className="w-6 h-6 text-[#E86F2C]" />
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '14px' }}>
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '16px', border: '1px solid #EFE3C8', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '9999px', backgroundColor: '#FFF2E2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Flame style={{ width: '24px', height: '24px', color: '#E86F2C' }} />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#8C735B]">連続達成</p>
-              <p className="text-2xl font-black text-[#E04F33] leading-tight mt-0.5">
-                {streak} <span className="text-sm font-bold text-[#5C4532]">日</span>
+              <p style={{ fontSize: '12px', fontWeight: 700, color: '#8C735B', margin: 0 }}>連続達成</p>
+              <p style={{ fontSize: '24px', fontWeight: 900, color: '#E04F33', margin: '2px 0 0 0' }}>
+                {streak} <span style={{ fontSize: '14px', fontWeight: 700, color: '#5C4532' }}>日</span>
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#EFE3C8] flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-[#FDECEC] flex items-center justify-center shrink-0">
-              <Trophy className="w-6 h-6 text-[#E04F33]" />
+          <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '16px', border: '1px solid #EFE3C8', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '9999px', backgroundColor: '#FDECEC', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Trophy style={{ width: '24px', height: '24px', color: '#E04F33' }} />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#8C735B]">通算スタンプ</p>
-              <p className="text-2xl font-black text-[#E04F33] leading-tight mt-0.5">
-                {totalCount} <span className="text-sm font-bold text-[#5C4532]">個</span>
+              <p style={{ fontSize: '12px', fontWeight: 700, color: '#8C735B', margin: 0 }}>通算スタンプ</p>
+              <p style={{ fontSize: '24px', fontWeight: 900, color: '#E04F33', margin: '2px 0 0 0' }}>
+                {totalCount} <span style={{ fontSize: '14px', fontWeight: 700, color: '#5C4532' }}>個</span>
               </p>
             </div>
           </div>
         </section>
 
-        {/* クイックチェックインエリア */}
-        <section className="bg-white rounded-3xl p-5 sm:p-6 border-2 border-[#E04F33] shadow-[0_6px_20px_rgba(224,79,51,0.12)] text-center">
-          <p className="text-xs sm:text-sm font-bold text-[#7A624B]">
+        {/* チェックインカード */}
+        <section style={{ backgroundColor: '#ffffff', borderRadius: '24px', padding: '20px', border: '2px solid #E04F33', boxShadow: '0 6px 20px rgba(224,79,51,0.12)', textAlign: 'center' }}>
+          <p style={{ fontSize: '13px', fontWeight: 700, color: '#7A624B', margin: 0 }}>
             本日: {today.getFullYear()}年{today.getMonth() + 1}月{today.getDate()}日
           </p>
 
-          <h2 className="text-base sm:text-lg font-extrabold text-[#3B2A1E] mt-1.5">
+          <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#3B2A1E', margin: '8px 0 16px 0' }}>
             体操が終わったらハンコを押そう！
           </h2>
 
-          <div className="mt-4">
+          <div>
             {isCheckedInToday ? (
-              <div className="w-full py-4 px-6 rounded-full bg-[#F3EFE6] border-2 border-[#D8CCB8] text-[#6E5844] font-extrabold text-base sm:text-lg flex items-center justify-center gap-2 select-none">
-                <CheckCircle2 className="w-6 h-6 text-[#2E9E5B]" />
+              <div style={{ width: '100%', padding: '16px', borderRadius: '9999px', backgroundColor: '#F3EFE6', border: '2px solid #D8CCB8', color: '#6E5844', fontWeight: 800, fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxSizing: 'border-box' }}>
+                <CheckCircle2 style={{ width: '24px', height: '24px', color: '#2E9E5B' }} />
                 <span>本日のスタンプ押印済み！</span>
               </div>
             ) : (
               <button
                 onClick={handleTodayCheckIn}
                 disabled={isStamping}
-                className={`w-full py-4 px-6 rounded-full bg-gradient-to-b from-[#EE5D3F] to-[#D94326] hover:from-[#F2674A] hover:to-[#E04F33] text-white font-black text-lg sm:text-xl shadow-[0_6px_0_#A82E17,0_10px_20px_rgba(224,79,51,0.35)] active:translate-y-1 active:shadow-[0_2px_0_#A82E17] transition-all duration-150 flex items-center justify-center gap-2.5 cursor-pointer ${
-                  isStamping ? 'scale-95' : ''
-                }`}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '9999px',
+                  background: 'linear-gradient(to bottom, #EE5D3F, #D94326)',
+                  color: '#ffffff',
+                  fontWeight: 900,
+                  fontSize: '18px',
+                  boxShadow: '0 6px 0 #A82E17, 0 10px 20px rgba(224,79,51,0.35)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  transition: 'transform 0.1s'
+                }}
               >
-                <span className="text-2xl leading-none select-none">👊</span>
+                <span style={{ fontSize: '24px' }}>👊</span>
                 <span>スタンプを押す！</span>
               </button>
             )}
           </div>
 
-          {/* 印鑑デザイン選択（テキスト案内なし・絵文字のみ） */}
-          <div className="mt-6 pt-4 border-t border-[#F2E8D5] flex flex-col sm:flex-row items-center justify-center gap-3">
-            <span className="text-xs font-extrabold text-[#7A624B] tracking-wider">
-              印鑑デザイン：
-            </span>
-            <div className="flex items-center justify-center gap-3.5">
+          {/* 印鑑デザイン（テキスト案内なし・絵文字のみ） */}
+          <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F2E8D5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: '#7A624B' }}>印鑑デザイン：</span>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               {STAMP_TYPES.map((stamp) => {
                 const isSelected = selectedStamp === stamp.id;
                 return (
@@ -458,14 +460,22 @@ export default function App() {
                     key={stamp.id}
                     type="button"
                     onClick={() => handleSelectStamp(stamp.id)}
-                    aria-label={`スタンプ ${stamp.emoji}`}
-                    className={`w-13 h-13 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
-                      isSelected
-                        ? 'border-2 border-[#E04F33] bg-[#FFF5F2] scale-110 shadow-[0_4px_12px_rgba(224,79,51,0.3)] ring-2 ring-[#E04F33]/20'
-                        : 'border border-[#E5D7BE] bg-[#FAF6ED] hover:border-[#C9B493] hover:bg-white opacity-80 hover:opacity-100'
-                    }`}
+                    style={{
+                      width: '52px',
+                      height: '52px',
+                      borderRadius: '9999px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      border: isSelected ? '2px solid #E04F33' : '1px solid #E5D7BE',
+                      backgroundColor: isSelected ? '#FFF5F2' : '#FAF6ED',
+                      boxShadow: isSelected ? '0 4px 12px rgba(224,79,51,0.3)' : 'none',
+                      transform: isSelected ? 'scale(1.1)' : 'scale(1)'
+                    }}
                   >
-                    <span className="text-2xl sm:text-3xl leading-none select-none">{stamp.emoji}</span>
+                    <span style={{ fontSize: '26px' }}>{stamp.emoji}</span>
                   </button>
                 );
               })}
@@ -473,44 +483,39 @@ export default function App() {
           </div>
         </section>
 
-        {/* 出席カードエリア（自動スクロール対象） */}
+        {/* 出席カードエリア */}
         <section 
           ref={matrixRef}
-          className={`bg-[#FFFDF7] paper-texture rounded-3xl p-4 sm:p-6 border-2 shadow-md transition-all duration-700 scroll-mt-24 ${
-            isMatrixHighlighted 
-              ? 'border-[#E04F33] bg-[#FFF4F0] scale-[1.01] shadow-[0_0_30px_rgba(224,79,51,0.35)]' 
-              : 'border-[#DFC9A6]'
-          }`}
+          style={{
+            backgroundColor: '#FFFDF7',
+            borderRadius: '24px',
+            padding: '20px',
+            border: isMatrixHighlighted ? '2px solid #E04F33' : '2px solid #DFC9A6',
+            boxShadow: isMatrixHighlighted ? '0 0 30px rgba(224,79,51,0.35)' : '0 4px 12px rgba(0,0,0,0.05)',
+            transition: 'all 0.7s'
+          }}
         >
-          <div className="text-center pb-3 border-b-2 border-dashed border-[#E3CFAF]">
-            <p className="text-xs font-extrabold tracking-widest text-[#9E7B56] uppercase">
+          <div style={{ textAlign: 'center', paddingBottom: '12px', borderBottom: '2px dashed #E3CFAF' }}>
+            <p style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.15em', color: '#9E7B56', margin: 0, textTransform: 'uppercase' }}>
               Radio Exercise
             </p>
 
-            <div className="flex items-center justify-between mt-1">
-              <button
-                onClick={handlePrevMonth}
-                className="p-2 rounded-full hover:bg-[#F5EAD6] text-[#6E4F32] active:scale-90 transition cursor-pointer"
-                aria-label="前の月へ"
-              >
-                <ChevronLeft className="w-6 h-6" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+              <button onClick={handlePrevMonth} style={{ padding: '8px', borderRadius: '9999px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#6E4F32' }}>
+                <ChevronLeft style={{ width: '24px', height: '24px' }} />
               </button>
 
-              <h2 className="text-xl sm:text-2xl font-black text-[#6E4222] tracking-wide">
+              <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#6E4222', margin: 0 }}>
                 {viewYear}年{viewMonth + 1}月 出席カード
               </h2>
 
-              <button
-                onClick={handleNextMonth}
-                className="p-2 rounded-full hover:bg-[#F5EAD6] text-[#6E4F32] active:scale-90 transition cursor-pointer"
-                aria-label="次の月へ"
-              >
-                <ChevronRight className="w-6 h-6" />
+              <button onClick={handleNextMonth} style={{ padding: '8px', borderRadius: '9999px', background: 'transparent', border: 'none', cursor: 'pointer', color: '#6E4F32' }}>
+                <ChevronRight style={{ width: '24px', height: '24px' }} />
               </button>
             </div>
 
-            <div className="mt-3 bg-[#FAF2E1] border border-[#E2CCA8] rounded-xl px-3.5 py-2 flex items-center gap-2 max-w-sm mx-auto focus-within:border-[#E04F33] focus-within:bg-white transition">
-              <label htmlFor="user-name-input" className="text-xs sm:text-sm font-extrabold text-[#6E4222] whitespace-nowrap">
+            <div style={{ marginTop: '12px', backgroundColor: '#FAF2E1', border: '1px solid #E2CCA8', borderRadius: '12px', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '8px', maxWidth: '320px', margin: '12px auto 0' }}>
+              <label htmlFor="user-name-input" style={{ fontSize: '13px', fontWeight: 800, color: '#6E4222', whiteSpace: 'nowrap' }}>
                 なまえ：
               </label>
               <input
@@ -520,29 +525,33 @@ export default function App() {
                 onChange={handleNameChange}
                 placeholder="ここになまえをかいてね"
                 maxLength={24}
-                className="w-full bg-transparent text-sm sm:text-base font-bold text-[#3B2A1E] placeholder-[#BCA586] focus:outline-none"
+                style={{ width: '100%', backgroundColor: 'transparent', fontSize: '14px', fontWeight: 700, color: '#3B2A1E', border: 'none', outline: 'none' }}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-1 sm:gap-1.5 mt-4 mb-1.5 text-center">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '6px', marginTop: '16px', marginBottom: '6px', textAlign: 'center' }}>
             {WEEKDAYS.map((dayName, idx) => (
               <div
                 key={dayName}
-                className={`text-xs font-extrabold py-1 rounded-md ${
-                  idx === 0 ? 'text-[#D94326] bg-[#FDECE8]' : idx === 6 ? 'text-[#2B6CB0] bg-[#EBF4FF]' : 'text-[#6E5338] bg-[#F5EAD6]'
-                }`}
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 800,
+                  padding: '4px 0',
+                  borderRadius: '6px',
+                  color: idx === 0 ? '#D94326' : idx === 6 ? '#2B6CB0' : '#6E5338',
+                  backgroundColor: idx === 0 ? '#FDECE8' : idx === 6 ? '#EBF4FF' : '#F5EAD6'
+                }}
               >
                 {dayName}
               </div>
             ))}
           </div>
 
-          {/* カレンダーグリッド（未来日ロック＆鍵表示） */}
-          <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '6px' }}>
             {calendarCells.map((cellDate, index) => {
               if (!cellDate) {
-                return <div key={`empty-${index}`} className="aspect-square rounded-xl bg-[#F7EFE0]/45 border border-transparent" />;
+                return <div key={`empty-${index}`} style={{ aspectRatio: '1', borderRadius: '12px', backgroundColor: 'rgba(247,239,224,0.45)' }} />;
               }
 
               const key = formatDateKey(cellDate);
@@ -560,45 +569,38 @@ export default function App() {
                   type="button"
                   onClick={() => handleDateCellClick(cellDate)}
                   disabled={isFuture}
-                  className={`aspect-square rounded-xl border flex flex-col items-center justify-between p-1 relative transition-all select-none ${
-                    isFuture
-                      ? 'border-[#ECE2CE] bg-[#F9F4E8]/70 opacity-60 cursor-not-allowed'
-                      : isTodayCell
-                      ? 'border-2 border-[#E04F33] bg-[#FFF4F0] shadow-sm cursor-pointer'
-                      : isPastEditable
-                      ? 'border-[#DFC9A6] bg-white hover:border-[#E04F33]/70 hover:bg-[#FFF9F2] cursor-pointer active:scale-95'
-                      : 'border-[#E8DBC3] bg-[#FAF4E8]/80 cursor-default'
-                  }`}
+                  style={{
+                    aspectRatio: '1',
+                    borderRadius: '12px',
+                    border: isTodayCell ? '2px solid #E04F33' : isFuture ? '1px solid rgba(230,212,181,0.6)' : '1px solid #DFC9A6',
+                    backgroundColor: isTodayCell ? '#FFF4F0' : isFuture ? 'rgba(250,244,232,0.5)' : 'white',
+                    cursor: isFuture ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '4px',
+                    position: 'relative'
+                  }}
                 >
-                  <div className="w-full flex items-center justify-between px-0.5">
-                    <span
-                      className={`text-[11px] sm:text-xs font-extrabold leading-none ${
-                        isTodayCell
-                          ? 'text-[#E04F33]'
-                          : dayOfWeek === 0
-                          ? 'text-[#D94326]'
-                          : dayOfWeek === 6
-                          ? 'text-[#2B6CB0]'
-                          : 'text-[#6E5338]'
-                      }`}
-                    >
+                  <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: isTodayCell ? '#E04F33' : dayOfWeek === 0 ? '#D94326' : dayOfWeek === 6 ? '#2B6CB0' : '#6E5338' }}>
                       {cellDate.getDate()}
                     </span>
                     {isTodayCell && (
-                      <span className="text-[8px] font-black text-white bg-[#E04F33] px-1 rounded-sm leading-tight">今日</span>
+                      <span style={{ fontSize: '8px', fontWeight: 900, color: '#fff', backgroundColor: '#E04F33', padding: '0 2px', borderRadius: '2px' }}>今日</span>
                     )}
                   </div>
 
-                  <div className="flex-1 flex items-center justify-center w-full">
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                     {stampedId ? (
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#E04F33] bg-[#FFF5F3]/90 flex flex-col items-center justify-center shadow-[0_1px_4px_rgba(224,79,51,0.25)] animate-stamp-slam">
-                        <span className="text-base sm:text-xl leading-none">{getStampEmoji(stampedId)}</span>
-                        <span className="text-[6px] sm:text-[7px] font-black text-[#E04F33] leading-none mt-0.5 tracking-tighter">済</span>
+                      <div className="animate-stamp-slam" style={{ width: '32px', height: '32px', borderRadius: '9999px', border: '2px solid #E04F33', backgroundColor: 'rgba(255,245,243,0.9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <span style={{ fontSize: '16px', lineHeight: 1 }}>{getStampEmoji(stampedId)}</span>
                       </div>
                     ) : isFuture ? (
-                      <Lock className="w-3.5 h-3.5 text-[#BCA586]" />
+                      <Lock style={{ width: '14px', height: '14px', color: '#BCA586' }} />
                     ) : (
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-dashed border-[#DFC9A6]/80" />
+                      <div style={{ width: '28px', height: '28px', borderRadius: '9999px', border: '1px dashed rgba(223,201,166,0.8)' }} />
                     )}
                   </div>
                 </button>
@@ -606,75 +608,60 @@ export default function App() {
             })}
           </div>
 
-          <p className="mt-4 text-[11px] text-[#8C735B] text-center leading-relaxed">
+          <p style={{ marginTop: '16px', fontSize: '11px', color: '#8C735B', textAlign: 'center', lineHeight: '1.5' }}>
             ※ 2026年11月1日〜前日までのマス目は、タップすると任意でスタンプの押印・取り消しができます（未来日はロック）。
           </p>
         </section>
 
-        <div className="flex justify-center pt-1">
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '4px' }}>
           <button
             type="button"
             onClick={() => setShowResetModal(true)}
-            className="text-xs text-[#9E876E] hover:text-[#D94326] flex items-center gap-1.5 py-1.5 px-3 rounded-lg transition cursor-pointer"
+            style={{ fontSize: '12px', color: '#9E876E', background: 'none', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', cursor: 'pointer' }}
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw style={{ width: '14px', height: '14px' }} />
             <span>スタンプ記録をリセットする</span>
           </button>
         </div>
       </main>
 
-      {/* 達成モーダル */}
+      {/* モーダル群 */}
       {celebrationModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-[#FFFDF7] border-4 border-[#E04F33] rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative animate-stamp-slam">
-            <button
-              onClick={() => setCelebrationModal(null)}
-              className="absolute top-3 right-3 p-1.5 rounded-full text-[#8C735B] hover:bg-[#F3E9D6] cursor-pointer"
-            >
-              <X className="w-5 h-5" />
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 50 }}>
+          <div className="animate-stamp-slam" style={{ backgroundColor: '#FFFDF7', border: '4px solid #E04F33', borderRadius: '24px', maxWidth: '360px', width: '100%', padding: '24px', textAlign: 'center', position: 'relative' }}>
+            <button onClick={() => setCelebrationModal(null)} style={{ position: 'absolute', top: '12px', right: '12px', padding: '6px', borderRadius: '9999px', background: 'none', border: 'none', cursor: 'pointer', color: '#8C735B' }}>
+              <X style={{ width: '20px', height: '20px' }} />
             </button>
-            <div className="w-16 h-16 rounded-full bg-[#FFF2E2] border-2 border-[#E04F33] flex items-center justify-center mx-auto mb-3 shadow-inner">
-              <Award className="w-9 h-9 text-[#E04F33]" />
+            <div style={{ width: '64px', height: '64px', borderRadius: '9999px', backgroundColor: '#FFF2E2', border: '2px solid #E04F33', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+              <Award style={{ width: '36px', height: '36px', color: '#E04F33' }} />
             </div>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#E04F33] text-white text-xs font-black tracking-wider mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 12px', borderRadius: '9999px', backgroundColor: '#E04F33', color: '#fff', fontSize: '12px', fontWeight: 900, marginBottom: '8px' }}>
+              <Sparkles style={{ width: '14px', height: '14px' }} />
               {celebrationModal.badge}
             </span>
-            <h3 className="text-xl font-black text-[#3B2A1E] mt-1">{celebrationModal.title}</h3>
-            <p className="text-sm text-[#5C4532] mt-2.5 leading-relaxed bg-[#FAF2E1] p-3.5 rounded-2xl border border-[#E6D4B5]">
+            <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#3B2A1E', margin: '4px 0 10px 0' }}>{celebrationModal.title}</h3>
+            <p style={{ fontSize: '14px', color: '#5C4532', margin: 0, lineHeight: '1.6', backgroundColor: '#FAF2E1', padding: '14px', borderRadius: '16px', border: '1px solid #E6D4B5' }}>
               {celebrationModal.message}
             </p>
-            <button
-              onClick={() => setCelebrationModal(null)}
-              className="mt-5 w-full py-3 rounded-full bg-[#E04F33] hover:bg-[#C94127] text-white font-extrabold text-sm shadow-md transition cursor-pointer"
-            >
+            <button onClick={() => setCelebrationModal(null)} style={{ marginTop: '20px', width: '100%', padding: '12px', borderRadius: '9999px', backgroundColor: '#E04F33', color: '#fff', fontWeight: 800, fontSize: '14px', border: 'none', cursor: 'pointer' }}>
               やったね！とじる
             </button>
           </div>
         </div>
       )}
 
-      {/* リセット確認モーダル */}
       {showResetModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white border-2 border-[#E04F33] rounded-3xl max-w-sm w-full p-6 text-center shadow-xl">
-            <h3 className="text-lg font-extrabold text-[#3B2A1E]">スタンプ記録をリセットしますか？</h3>
-            <p className="text-xs sm:text-sm text-[#7A624B] mt-2 leading-relaxed">
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', zIndex: 50 }}>
+          <div style={{ backgroundColor: '#fff', border: '2px solid #E04F33', borderRadius: '24px', maxWidth: '360px', width: '100%', padding: '24px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#3B2A1E', margin: '0 0 8px 0' }}>スタンプ記録をリセットしますか？</h3>
+            <p style={{ fontSize: '13px', color: '#7A624B', margin: 0, lineHeight: '1.5' }}>
               これまでに押したすべてのスタンプ履歴が消去されます。（入力したなまえは残ります）
             </p>
-            <div className="grid grid-cols-2 gap-3 mt-5">
-              <button
-                type="button"
-                onClick={() => setShowResetModal(false)}
-                className="py-2.5 rounded-full bg-[#F3EFE6] hover:bg-[#E7E0D2] text-[#5C4532] font-bold text-sm transition cursor-pointer"
-              >
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px', marginTop: '20px' }}>
+              <button type="button" onClick={() => setShowResetModal(false)} style={{ padding: '10px', borderRadius: '9999px', backgroundColor: '#F3EFE6', color: '#5C4532', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer' }}>
                 キャンセル
               </button>
-              <button
-                type="button"
-                onClick={handleResetAll}
-                className="py-2.5 rounded-full bg-[#E04F33] hover:bg-[#C94127] text-white font-bold text-sm shadow-sm transition cursor-pointer"
-              >
+              <button type="button" onClick={handleResetAll} style={{ padding: '10px', borderRadius: '9999px', backgroundColor: '#E04F33', color: '#fff', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer' }}>
                 リセットする
               </button>
             </div>
