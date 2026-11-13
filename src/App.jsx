@@ -24,10 +24,10 @@ const STAMP_TYPES = [
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
 
 const STORAGE_KEYS = {
-  STAMPS: 'radio_taiso_stamps_v6',
-  SELECTED_STAMP: 'radio_taiso_selected_stamp_v6',
-  USER_NAME: 'radio_taiso_user_name_v6',
-  SOUND_ENABLED: 'radio_taiso_sound_enabled_v6',
+  STAMPS: 'radio_taiso_stamps_v8',
+  SELECTED_STAMP: 'radio_taiso_selected_stamp_v8',
+  USER_NAME: 'radio_taiso_user_name_v8',
+  SOUND_ENABLED: 'radio_taiso_sound_enabled_v8',
 };
 
 export default function App() {
@@ -449,37 +449,34 @@ export default function App() {
             )}
           </div>
 
-          {/* 印鑑デザイン（テキスト案内なし・絵文字のみ） */}
-          <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F2E8D5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 800, color: '#7A624B' }}>印鑑デザイン：</span>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              {STAMP_TYPES.map((stamp) => {
-                const isSelected = selectedStamp === stamp.id;
-                return (
-                  <button
-                    key={stamp.id}
-                    type="button"
-                    onClick={() => handleSelectStamp(stamp.id)}
-                    style={{
-                      width: '52px',
-                      height: '52px',
-                      borderRadius: '9999px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      border: isSelected ? '2px solid #E04F33' : '1px solid #E5D7BE',
-                      backgroundColor: isSelected ? '#FFF5F2' : '#FAF6ED',
-                      boxShadow: isSelected ? '0 4px 12px rgba(224,79,51,0.3)' : 'none',
-                      transform: isSelected ? 'scale(1.1)' : 'scale(1)'
-                    }}
-                  >
-                    <span style={{ fontSize: '26px' }}>{stamp.emoji}</span>
-                  </button>
-                );
-              })}
-            </div>
+          {/* 印鑑デザイン部分（文字を削除し、絵文字ボタンのみ中央配置） */}
+          <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #F2E8D5', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
+            {STAMP_TYPES.map((stamp) => {
+              const isSelected = selectedStamp === stamp.id;
+              return (
+                <button
+                  key={stamp.id}
+                  type="button"
+                  onClick={() => handleSelectStamp(stamp.id)}
+                  style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '9999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    border: isSelected ? '2px solid #E04F33' : '1px solid #E5D7BE',
+                    backgroundColor: isSelected ? '#FFF5F2' : '#FAF6ED',
+                    boxShadow: isSelected ? '0 4px 12px rgba(224,79,51,0.3)' : 'none',
+                    transform: isSelected ? 'scale(1.1)' : 'scale(1)'
+                  }}
+                >
+                  <span style={{ fontSize: '26px' }}>{stamp.emoji}</span>
+                </button>
+              );
+            })}
           </div>
         </section>
 
